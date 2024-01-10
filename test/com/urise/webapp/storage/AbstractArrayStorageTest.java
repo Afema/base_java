@@ -1,60 +1,33 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class AbstractArrayStorageTest {
-    private Storage storage = new ArrayStorage();
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
+public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
 
-    @Before
-    public void setUp() throws Exception {
-        storage.clear();
-        storage.save(new Resume(UUID_1));
-        storage.save(new Resume(UUID_2));
-        storage.save(new Resume(UUID_3));
+
+    public AbstractArrayStorageTest(Storage storage) {
+       super(storage);
     }
 
-
-    @Test
-    public void size() throws Exception {
-        Assert.assertEquals(3, storage.size());
-    }
-
-    @Test
-    public void get() throws Exception {
-    }
-
-    @Test(expected = NotExistStorageException.class)
-    public void getNotExist() throws Exception {
-        storage.get("dummy");
-    }
-
-    @Test
-    public void clear() throws Exception {
-    }
-
-    @Test
-    public void update() throws Exception {
-       // throw new IllegalStateException();
-    }
-
-    @Test
-    public void getAll() throws Exception {
-    }
-
-    @Test
-    public void save() throws Exception {
-    }
-
-    @Test
-    public void delete() throws Exception {
+    @Test(expected = StorageException.class)
+    public void saveOverflow() throws Exception {
+        try {
+            for (int i = 4; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
+                storage.save(new Resume());
+            }
+        } catch (StorageException e) {
+            Assert.fail();
+        }
+        storage.save(new Resume());
     }
 }
+
+
