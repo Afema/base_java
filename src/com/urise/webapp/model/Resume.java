@@ -3,7 +3,7 @@ package com.urise.webapp.model;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Resume {
+public class Resume implements Comparable<Resume> {
 
     private final String uuid;
     private final String fullName;
@@ -23,23 +23,30 @@ public class Resume {
     }
 
     @Override
-    public String toString() {
-        return uuid;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Resume resume = (Resume) o;
 
-        return uuid.equals(resume.uuid);
+        if (!uuid.equals(resume.uuid)) return false;
+        return fullName.equals(resume.fullName);
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        return result;
     }
 
+    @Override
+    public String toString() {
+        return uuid + '(' + fullName+ ')';
+    }
+
+    @Override
+    public int compareTo(Resume o) {
+        return fullName.compareTo(o.fullName);
+    }
 }
